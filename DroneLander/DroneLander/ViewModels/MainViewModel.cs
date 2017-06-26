@@ -21,8 +21,6 @@ namespace DroneLander
             this.Thrust = this.ActiveLandingParameters.Thrust;
             this.FuelRemaining = CoreConstants.StartingFuel;
             this.IsActive = false;
-
-            ResetLanding();
         }
 
         private MainPage _activityPage;
@@ -125,6 +123,8 @@ namespace DroneLander
 
         public void StartLanding()
         {
+            Helpers.AudioHelper.ToggleEngine();
+
             Device.StartTimer(TimeSpan.FromMilliseconds(Common.CoreConstants.PollingIncrement), () =>
             {
                 UpdateFlightParameters();
@@ -138,6 +138,8 @@ namespace DroneLander
                         this.FuelRemaining = this.ActiveLandingParameters.Fuel / 1000;
                         this.Thrust = this.ActiveLandingParameters.Thrust;
                     });
+
+                    if (this.FuelRemaining == 0.0) Helpers.AudioHelper.KillEngine();
 
                     return this.IsActive;
                 }
